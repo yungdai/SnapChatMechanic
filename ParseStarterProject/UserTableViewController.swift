@@ -16,14 +16,7 @@ class UserTableViewController: UITableViewController, UINavigationControllerDele
     var activeUser = 0
     var messageCount = 0
     // timer variable
-
-    
-    @IBAction func logoutButtonPressed(sender: AnyObject) {
-        PFUser.logOut()
-        println("User has logged out")
-        timer.invalidate()
-        self.performSegueWithIdentifier("logout", sender: nil)
-    }
+    @IBOutlet weak var logOutButton: UIBarButtonItem!
     
     var timer = NSTimer()
     
@@ -85,7 +78,71 @@ class UserTableViewController: UITableViewController, UINavigationControllerDele
     }
     
 
-  
+    // the main work-horse of this application
+//    func checkForMessages() {
+//        // set up query on Image Class
+//        var query = PFQuery(className:"image")
+//        // get the user the image is getting sent too and the user that sent the image
+//        query.whereKey("receiver", equalTo: PFUser.currentUser()!.username!)
+//        // grab the images in the list
+//        var images: Void = query.findObjectsInBackgroundWithBlock { (photo, error) -> Void in
+//            if (error == nil) {
+//                var done = false
+//                if let image1 = photo {
+//                    if done == false {
+//                        var imageView:PFImageView = PFImageView()
+//                        //imageView.file = image["photo"] as? PFFile
+//                        for image in image1 {
+//                            if let imagefile = image["image"] as? PFFile {
+//                                
+//                                imageView.file = imagefile
+//                                imageView.loadInBackground()
+//                                println(imageView.file)
+//                                imageView.loadInBackground({ (photo, error) -> Void in
+//                                    
+//                                    if error == nil {
+//                                        
+//                                        var senderUsername = ""
+//                                        
+//                                        if image["sender"] != nil {
+//                                            senderUsername = image["sender"]! as! String
+//                                        } else {
+//                                            senderUsername = "unknown user"
+//                                        }
+//                                        var alert = UIAlertController(title: "You have a message", message: "Message from \(senderUsername)", preferredStyle: UIAlertControllerStyle.Alert)
+//                                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {
+//                                            (action) -> Void in
+//                                            var backgroundView = UIImageView(frame: CGRectMake(0, 0, self.view.frame.width / 2, self.view.frame.height / 2))
+//                                            backgroundView.backgroundColor = UIColor.blackColor()
+//                                            backgroundView.alpha = 0.8
+//                                            backgroundView.tag = 3
+//                                            self.view.addSubview(backgroundView)
+//                                            
+//                                            var displayedImage = UIImageView(frame: CGRectMake(0, 0, self.view.frame.width, self.view.frame.height))
+//                                            
+//                                            displayedImage.image = photo
+//                                            println(displayedImage.image)
+//                                            displayedImage.tag = 3
+//                                            displayedImage.contentMode = UIViewContentMode.ScaleAspectFit
+//                                            self.view.addSubview(displayedImage)
+//                                            // will use this to delete the image from the server
+//                                            image.delete()
+//                                            self.timer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: Selector("hideMessage"), userInfo: nil, repeats: false)
+//                                        }))
+//                                        // if self.messageCount == 0 {
+//                                        self.presentViewController(alert, animated: true, completion: nil)
+//                                        //    self.messageCount++
+//                                        // }
+//                                    }
+//                                })
+//                                done = true
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     func checkForMessages() {
         println("Checking for messages")
@@ -123,7 +180,7 @@ class UserTableViewController: UITableViewController, UINavigationControllerDele
                                         backgroundView.tag = 3
                                         self.view.addSubview(backgroundView)
                                         
-                                        // create a var for diplayed image
+                                        // var for diplayed image
                                         var displayedImage = UIImageView(frame: CGRectMake(0, 0, self.view.frame.width, self.view.frame.height))
                                         displayedImage.image = photo
                                         println(displayedImage.image)
@@ -136,15 +193,12 @@ class UserTableViewController: UITableViewController, UINavigationControllerDele
                                         self.timer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: Selector("hideMessage"), userInfo: nil, repeats: false)
                                         
                                     }))
-                                    
-                                    
                                     if self.messageCount == 0 {
                                         self.presentViewController(alert, animated: true, completion: nil)
                                         self.messageCount++
                                     }
                                 }
                             })
-    
                             done = true
                         }
                     }
