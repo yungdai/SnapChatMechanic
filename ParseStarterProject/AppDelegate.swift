@@ -75,6 +75,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
             application.registerForRemoteNotificationTypes(types)
         }
+        
+        // reveal the main app if you are a current user
+        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+        if PFUser.currentUser()?.sessionToken != nil {
+            let revealVC = storyBoard .instantiateViewControllerWithIdentifier("mainScreen") as! UIViewController
+            self.window?.rootViewController = revealVC
+        } else {
+            self.window?.rootViewController = (storyBoard.instantiateInitialViewController() as! UIViewController)
+        }
 
         return true
     }
